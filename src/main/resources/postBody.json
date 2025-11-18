@@ -1,0 +1,10 @@
+{
+  "questionText": "Which keyword is used to prevent a method from being overridden?",
+  "option1": "static",
+  "option2": "final",
+  "option3": "private",
+  "option4": "protected",
+  "rightAnswer": "final",
+  "difficultyLevel": "Medium",
+  "category": "JAVA"
+}
