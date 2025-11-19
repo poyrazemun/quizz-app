@@ -2,6 +2,8 @@ package com.poyraz.controller.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.poyraz.dto.ErrorDTO;
+import com.poyraz.exceptions.CategoryNotExistException;
+import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -30,6 +32,26 @@ public class ExceptionControllerAdvice {
                 questionNotFoundException.getMessage()
         );
         ErrorDTO errorDTO = buildErrorDTO(questionNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleNotEnoughQuestionsException(NotEnoughQuestionsException notEnoughQuestionsException, HttpServletRequest request) {
+        log.warn("NotEnoughQuestionsException at URI={} - message={}",
+                request.getRequestURI(),
+                notEnoughQuestionsException.getMessage()
+        );
+        ErrorDTO errorDTO = buildErrorDTO(notEnoughQuestionsException.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleCategoryNotExistException(CategoryNotExistException categoryNotExistException, HttpServletRequest request) {
+        log.warn("CategoryNotExistException at URI={} - message={}",
+                request.getRequestURI(),
+                categoryNotExistException.getMessage()
+        );
+        ErrorDTO errorDTO = buildErrorDTO(categoryNotExistException.getMessage(), HttpStatus.NOT_FOUND);
         return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
     }
 
