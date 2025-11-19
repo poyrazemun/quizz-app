@@ -1,6 +1,7 @@
 package com.poyraz.service;
 
 import com.poyraz.dto.QuestionDTO;
+import com.poyraz.exceptions.CategoryNotExistException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface QuestionService {
     void deleteQuestionById(long id) throws QuestionNotFoundException;
 
     QuestionDTO getRandomQuestion(long id);
+
+    List<QuestionDTO> getQuestionByCategory(String category) throws CategoryNotExistException;
 }

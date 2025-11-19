@@ -38,7 +38,7 @@ public class QuestionController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/addQuestion")
+    @PostMapping("/add")
     public ResponseEntity<String> addQuestion(@Valid @RequestBody QuestionDTO questionDTO) {
         log.info("Request: POST /question/addQuestion - adding question");
         String message = questionService.addQuestion(questionDTO);
@@ -61,5 +61,13 @@ public class QuestionController {
         QuestionDTO questionDTO = questionService.getRandomQuestion(id);
         log.info("Response: random question retrieved");
         return ResponseEntity.status(HttpStatus.OK).body(questionDTO);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<QuestionDTO>> getQuestionsByCategory(@RequestParam String category) {
+        log.info("Request: GET /question?category={} - fetching questions by category", category);
+        List<QuestionDTO> questionDTOList = questionService.getQuestionByCategory(category);
+        log.info("Response: returning {} questions for category {}", questionDTOList.size(), category);
+        return ResponseEntity.status(HttpStatus.OK).body(questionDTOList);
     }
 }

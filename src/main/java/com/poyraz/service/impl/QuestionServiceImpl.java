@@ -2,6 +2,8 @@ package com.poyraz.service.impl;
 
 import com.poyraz.dto.QuestionDTO;
 import com.poyraz.entity.Question;
+import com.poyraz.enums.Category;
+import com.poyraz.exceptions.CategoryNotExistException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 import com.poyraz.repository.QuestionRepository;
 import com.poyraz.service.QuestionService;
@@ -28,6 +30,8 @@ public class QuestionServiceImpl implements QuestionService {
     private String successfullySavedMessage;
     @Value("${question.not.found}")
     private String questionNotFoundMessage;
+    @Value("${category.not.exist}")
+    private String categoryNotExistMessage;
 
     @Override
     public String addQuestion(QuestionDTO questionDTO) {
@@ -66,7 +70,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void deleteQuestionById(long id) throws QuestionNotFoundException {
         log.info("Service: deleteQuestionById - deleting id {}", id);
-        if (questionRepository.findById(id).isPresent()) {
+        if (questionRepository.existsById(id)) {
             questionRepository.deleteById(id);
             log.info("Service: deleteQuestionById - deleted id {}", id);
         } else {
@@ -89,5 +93,25 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = page.getContent().getFirst();
         log.info("Service: getRandomQuestion - returning random question");
         return questionMapper.questionToQuestionDTO(question);
+    }
+
+    @Override
+    public List<QuestionDTO> getQuestionByCategory(String category) throws CategoryNotExistException {
+
+        log.info("Service: getQuestionByCategory - retrieving questions with category {}", category);
+        Category categoryEnum;
+        try {
+            categoryEnum = Category.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new CategoryNotExistException(String.format(categoryNotExistMessage, category));
+        }
+
+        List<QuestionDTO> list = questionRepository.findByCategory(categoryEnum)
+                .stream()
+                .map(questionMapper::questionToQuestionDTO)
+                .toList();
+
+        log.info("Service: getQuestionByCategory - retrieved {} questions with category {}", list.size(), category);
+        return list;
     }
 }
