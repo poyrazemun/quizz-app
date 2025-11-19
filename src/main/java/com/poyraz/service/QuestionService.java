@@ -15,4 +15,5 @@ public interface QuestionService {
 
     void deleteQuestionById(long id) throws QuestionNotFoundException;
 
+    QuestionDTO getRandomQuestion(long id);
 }

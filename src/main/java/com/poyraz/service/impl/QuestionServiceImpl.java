@@ -8,9 +8,12 @@ import com.poyraz.service.QuestionService;
 import com.poyraz.util.QuestionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor
 @Service
@@ -53,5 +56,17 @@ public class QuestionServiceImpl implements QuestionService {
         } else {
             throw new QuestionNotFoundException(String.format(questionNotFoundMessage, id));
         }
+    }
+
+    @Override
+    public QuestionDTO getRandomQuestion(long ignored) {
+        long count = questionRepository.count();
+        if (count == 0) {
+            throw new QuestionNotFoundException("No questions available");
+        }
+        int index = ThreadLocalRandom.current().nextInt((int) count);
+        Page<Question> page = questionRepository.findAll(PageRequest.of(index, 1));
+        Question question = page.getContent().getFirst();
+        return questionMapper.questionToQuestionDTO(question);
     }
 }

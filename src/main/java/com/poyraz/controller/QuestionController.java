@@ -42,4 +42,11 @@ public class QuestionController {
         questionService.deleteQuestionById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/random")
+    public ResponseEntity<QuestionDTO> getRandomQuestion() {
+        long id = 1;
+        QuestionDTO questionDTO = questionService.getRandomQuestion(id);
+        return ResponseEntity.status(HttpStatus.OK).body(questionDTO);
+    }
 }
