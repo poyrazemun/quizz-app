@@ -1,6 +1,7 @@
 package com.poyraz.util;
 
 import com.poyraz.dto.QuestionDTO;
+import com.poyraz.dto.QuestionWrapperDTO;
 import com.poyraz.entity.Question;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -13,5 +14,7 @@ public interface QuestionMapper {
 
 
     QuestionDTO questionToQuestionDTO(Question question);
+
+    QuestionWrapperDTO questionToQuestionWrapperDTO(Question question);
 
 }

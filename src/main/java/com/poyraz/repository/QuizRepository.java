@@ -1,11 +1,8 @@
 package com.poyraz.repository;
 
-import com.poyraz.entity.Question;
-import com.poyraz.enums.Category;
+import com.poyraz.entity.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
-public interface QuizRepository extends JpaRepository<Question, Long> {
-    List<Question> findByCategory(Category category);
 }

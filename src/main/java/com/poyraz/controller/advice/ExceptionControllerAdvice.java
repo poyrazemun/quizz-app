@@ -5,6 +5,7 @@ import com.poyraz.dto.ErrorDTO;
 import com.poyraz.exceptions.CategoryNotExistException;
 import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
+import com.poyraz.exceptions.QuizNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,16 @@ public class ExceptionControllerAdvice {
                 questionNotFoundException.getMessage()
         );
         ErrorDTO errorDTO = buildErrorDTO(questionNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleQuizNotFoundException(QuizNotFoundException quizNotFoundException, HttpServletRequest request) {
+        log.warn("QuizNotFoundException at URI={} - message={}",
+                request.getRequestURI(),
+                quizNotFoundException.getMessage()
+        );
+        ErrorDTO errorDTO = buildErrorDTO(quizNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
         return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
     }
 

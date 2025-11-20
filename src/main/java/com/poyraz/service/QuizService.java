@@ -1,11 +1,15 @@
 package com.poyraz.service;
 
-import com.poyraz.dto.QuestionDTO;
+import com.poyraz.dto.QuestionWrapperDTO;
 import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
+import com.poyraz.exceptions.QuizNotFoundException;
 
 import java.util.List;
 
 public interface QuizService {
-    List<QuestionDTO> createQuiz(String category, int noOfQuestions) throws QuestionNotFoundException, NotEnoughQuestionsException;
+    String createQuiz(String category, int noOfQuestions, String quizName) throws QuestionNotFoundException, NotEnoughQuestionsException;
+
+    List<QuestionWrapperDTO> getQuizQuestionsById(long id) throws QuizNotFoundException;
+
 }
