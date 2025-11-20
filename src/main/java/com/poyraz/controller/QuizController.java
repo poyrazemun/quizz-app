@@ -3,6 +3,7 @@ package com.poyraz.controller;
 import com.poyraz.dto.QuestionWrapperDTO;
 import com.poyraz.service.QuizService;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class QuizController {
     private final QuizService quizService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createQuiz(@RequestParam String category, @RequestParam @Positive(message = "{quiz.questionCount.positive}") int noOfQuestions, @RequestParam String quizName) {
+    public ResponseEntity<String> createQuiz(@RequestParam String category, @RequestParam @Positive(message = "{quiz.questionCount.positive}") int noOfQuestions, @RequestParam @NotBlank(message = "{quiz.name.required}") String quizName) {
         String message = quizService.createQuiz(category, noOfQuestions, quizName);
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
