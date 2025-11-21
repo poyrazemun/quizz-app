@@ -1,0 +1,17 @@
+{
+  "submitterName": "Alice",
+  "answers": [
+    {
+      "questionId": 101,
+      "userAnswer": "B"
+    },
+    {
+      "questionId": 102,
+      "userAnswer": "D"
+    },
+    {
+      "questionId": 103,
+      "userAnswer": "A"
+    }
+  ]
+}

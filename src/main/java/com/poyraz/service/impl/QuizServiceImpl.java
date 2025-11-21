@@ -1,15 +1,19 @@
 package com.poyraz.service.impl;
 
-import com.poyraz.dto.QuestionDTO;
-import com.poyraz.dto.QuestionWrapperDTO;
+import com.poyraz.dto.*;
+import com.poyraz.entity.Answer;
+import com.poyraz.entity.Question;
 import com.poyraz.entity.Quiz;
+import com.poyraz.entity.Submission;
 import com.poyraz.enums.Category;
 import com.poyraz.exceptions.CategoryNotExistException;
 import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 import com.poyraz.exceptions.QuizNotFoundException;
+import com.poyraz.repository.AnswerRepository;
 import com.poyraz.repository.QuestionRepository;
 import com.poyraz.repository.QuizRepository;
+import com.poyraz.repository.SubmissionRepository;
 import com.poyraz.service.QuizService;
 import com.poyraz.util.QuestionMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -34,10 +37,18 @@ public class QuizServiceImpl implements QuizService {
     private String quizCreationMessage;
     @Value("${quiz.not.found}")
     private String quizNotFoundMessage;
+    @Value("${answers.submitted.successfully}")
+    private String answersSubmittedSuccessfullyMessage;
+    @Value("${quiz.not.match}")
+    private String quizNotMatchMessage;
+    @Value("${question.not.found}")
+    private String questionNotFoundMessage;
 
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
+    private final AnswerRepository answerRepository;
+    private final SubmissionRepository submissionRepository;
 
 
     @Override
@@ -49,7 +60,6 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.save(quiz);
         log.info("Quiz created with name: {}, category: {}, question count: {}", quizName, category, noOfQuestions);
         return String.format(quizCreationMessage, quiz.getId());
-
     }
 
     @Override
@@ -63,7 +73,7 @@ public class QuizServiceImpl implements QuizService {
         }
     }
 
-
+    @Override
     public List<QuestionDTO> createQuestionsOfTheQuiz(String category, int noOfQuestions) throws QuestionNotFoundException, NotEnoughQuestionsException {
         Category cat;
         try {
@@ -82,5 +92,62 @@ public class QuizServiceImpl implements QuizService {
         Collections.shuffle(list);
 
         return list.subList(0, noOfQuestions);
+    }
+
+    @Override
+    public SubmissionResultDTO submitQuiz(long quizId, SubmissionDTO submissionDTO) throws QuizNotFoundException {
+        if (!quizRepository.existsById(quizId)) {
+            throw new QuizNotFoundException(String.format(quizNotFoundMessage, quizId));
+        }
+
+        List<Long> questionIds = quizRepository.findById(quizId).orElseThrow().getQuestions()
+                .stream().map(Question::getId).toList();
+
+        List<AnswerDTO> answerDTOS = submissionDTO.getAnswers();
+        List<Long> answeredQuestionIds = answerDTOS.stream()
+                .map(AnswerDTO::getQuestionId)
+                .toList();
+
+        Set<Long> questionIdSet = new HashSet<>(questionIds);
+        Set<Long> answeredIdSet = new HashSet<>(answeredQuestionIds);
+        if (!questionIdSet.equals(answeredIdSet)) {
+            throw new QuizNotFoundException(String.format(quizNotMatchMessage, quizId));
+        }
+
+        Submission submission = Submission.builder()
+                .submitterName(submissionDTO.getSubmitterName())
+                .quizId(quizId)
+                .submittedAt(LocalDateTime.now())
+                .build();
+
+        List<Answer> entities = new ArrayList<>();
+        int correct = 0;
+        int wrong = 0;
+        for (AnswerDTO dto : answerDTOS) {
+            Long qId = dto.getQuestionId();
+            Question question = questionRepository.findById(qId)
+                    .orElseThrow(() -> new QuestionNotFoundException(String.format("Question not found with id %d", qId)));
+            Answer answer = new Answer();
+            answer.setQuestion(question);
+            answer.setUserAnswer(dto.getUserAnswer());
+            answer.setSubmission(submission);
+            entities.add(answer);
+
+
+            String submitted = dto.getUserAnswer() == null ? "" : dto.getUserAnswer().trim();
+            String correctAnswer = question.getRightAnswer() == null ? "" : question.getRightAnswer().trim();
+            if (submitted.equalsIgnoreCase(correctAnswer)) {
+                correct++;
+            } else {
+                wrong++;
+            }
+        }
+        submission.setAnswers(entities);
+        submissionRepository.save(submission);
+        log.info("Saved submission id {} with {} answers for quiz id {}", submission.getId(), entities.size(), quizId);
+
+        int total = correct + wrong;
+        double percentage = total == 0 ? 0.0 : (100.0 * correct) / total;
+        return new SubmissionResultDTO(correct, wrong, total, percentage);
     }
 }
