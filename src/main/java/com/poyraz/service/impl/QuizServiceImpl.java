@@ -10,7 +10,6 @@ import com.poyraz.exceptions.CategoryNotExistException;
 import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 import com.poyraz.exceptions.QuizNotFoundException;
-import com.poyraz.repository.AnswerRepository;
 import com.poyraz.repository.QuestionRepository;
 import com.poyraz.repository.QuizRepository;
 import com.poyraz.repository.SubmissionRepository;
@@ -47,7 +46,6 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
-    private final AnswerRepository answerRepository;
     private final SubmissionRepository submissionRepository;
 
 
@@ -126,7 +124,7 @@ public class QuizServiceImpl implements QuizService {
         for (AnswerDTO dto : answerDTOS) {
             Long qId = dto.getQuestionId();
             Question question = questionRepository.findById(qId)
-                    .orElseThrow(() -> new QuestionNotFoundException(String.format("Question not found with id %d", qId)));
+                    .orElseThrow(() -> new QuestionNotFoundException(String.format(questionNotFoundMessage, qId)));
             Answer answer = new Answer();
             answer.setQuestion(question);
             answer.setUserAnswer(dto.getUserAnswer());
