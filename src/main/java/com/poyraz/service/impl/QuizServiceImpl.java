@@ -16,7 +16,6 @@ import com.poyraz.repository.SubmissionRepository;
 import com.poyraz.service.QuizService;
 import com.poyraz.util.QuestionMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
-@Slf4j
 @Service
 public class QuizServiceImpl implements QuizService {
 
@@ -54,7 +52,6 @@ public class QuizServiceImpl implements QuizService {
         List<QuestionDTO> list = createQuestionsOfTheQuiz(category, noOfQuestions);
         quiz.setQuestions(list.stream().map(questionMapper::questionDTOToQuestion).toList());
         quizRepository.save(quiz);
-        log.info("Quiz created with name: {}, category: {}, question count: {}", quizName, category, noOfQuestions);
         return String.format(quizCreationMessage, quiz.getId());
     }
 
@@ -62,7 +59,6 @@ public class QuizServiceImpl implements QuizService {
     public List<QuestionWrapperDTO> getQuizQuestionsById(long id) throws QuizNotFoundException {
         if (quizRepository.existsById(id)) {
             Quiz quiz = quizRepository.findById(id).orElseThrow();
-            log.info("Retrieving questions for quiz id: {}", id);
             return quiz.getQuestions().stream().map(questionMapper::questionToQuestionWrapperDTO).toList();
         } else {
             throw new QuizNotFoundException(String.format(quizNotFoundMessage, id));
@@ -108,13 +104,11 @@ public class QuizServiceImpl implements QuizService {
             Answer answer = new Answer();
             answer.setQuestion(question);
             answer.setUserAnswer(dto.getUserAnswer());
-            answer.setSubmission(submission); // Submission'ı Answer nesnesine bağlayın
+            answer.setSubmission(submission);
             entities.add(answer);
         }
         submission.setAnswers(entities);
         submissionRepository.save(submission);
-        log.info("Saved submission id {} with {} answers for quiz id {}", submission.getId(), entities.size(), quizId);
-
         return resultDTO;
     }
 

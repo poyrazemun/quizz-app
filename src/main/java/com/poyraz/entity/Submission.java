@@ -1,10 +1,7 @@
 package com.poyraz.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +23,7 @@ public class Submission {
     private LocalDateTime submittedAt;
 
     @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Answer> answers;
 }
 

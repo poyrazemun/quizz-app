@@ -2,6 +2,7 @@ package com.poyraz.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -14,10 +15,12 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
+    @ToString.Exclude
     private Question question;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submission_id")
+    @ToString.Exclude
     private Submission submission;
 }
