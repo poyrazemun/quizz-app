@@ -1,6 +1,5 @@
 package com.poyraz.service;
 
-import com.poyraz.dto.QuestionDTO;
 import com.poyraz.dto.QuestionWrapperDTO;
 import com.poyraz.dto.SubmissionDTO;
 import com.poyraz.dto.SubmissionResultDTO;
@@ -15,7 +14,6 @@ public interface QuizService {
 
     List<QuestionWrapperDTO> getQuizQuestionsById(long id) throws QuizNotFoundException;
 
-    List<QuestionDTO> createQuestionsOfTheQuiz(String category, int noOfQuestions);
 
     SubmissionResultDTO submitQuiz(long quizId, SubmissionDTO submissionDTO) throws QuizNotFoundException;
 

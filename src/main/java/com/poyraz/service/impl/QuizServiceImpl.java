@@ -36,8 +36,6 @@ public class QuizServiceImpl implements QuizService {
     private String quizCreationMessage;
     @Value("${quiz.not.found}")
     private String quizNotFoundMessage;
-    @Value("${answers.submitted.successfully}")
-    private String answersSubmittedSuccessfullyMessage;
     @Value("${quiz.not.match}")
     private String quizNotMatchMessage;
     @Value("${question.not.found}")
@@ -71,26 +69,6 @@ public class QuizServiceImpl implements QuizService {
         }
     }
 
-    @Override
-    public List<QuestionDTO> createQuestionsOfTheQuiz(String category, int noOfQuestions) throws QuestionNotFoundException, NotEnoughQuestionsException {
-        Category cat;
-        try {
-            cat = Category.valueOf(category.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new CategoryNotExistException(String.format(categoryNotExistMessage, category));
-        }
-        List<QuestionDTO> list = new ArrayList<>(questionRepository.findByCategory(cat)
-                .stream()
-                .map(questionMapper::questionToQuestionDTO)
-                .toList());
-
-        if (list.size() < noOfQuestions) {
-            throw new NotEnoughQuestionsException(String.format(notEnoughQuestionsMessage, category, noOfQuestions, list.size()));
-        }
-        Collections.shuffle(list);
-
-        return list.subList(0, noOfQuestions);
-    }
 
     @Override
     public SubmissionResultDTO submitQuiz(long quizId, SubmissionDTO submissionDTO) throws QuizNotFoundException {
@@ -112,40 +90,77 @@ public class QuizServiceImpl implements QuizService {
             throw new QuizNotFoundException(String.format(quizNotMatchMessage, quizId));
         }
 
+        SubmissionResultDTO resultDTO = calculateScores(answerDTOS);
+
         Submission submission = Submission.builder()
                 .submitterName(submissionDTO.getSubmitterName())
                 .quizId(quizId)
                 .submittedAt(LocalDateTime.now())
                 .build();
 
+
         List<Answer> entities = new ArrayList<>();
-        int correct = 0;
-        int wrong = 0;
         for (AnswerDTO dto : answerDTOS) {
             Long qId = dto.getQuestionId();
             Question question = questionRepository.findById(qId)
                     .orElseThrow(() -> new QuestionNotFoundException(String.format(questionNotFoundMessage, qId)));
+
             Answer answer = new Answer();
             answer.setQuestion(question);
             answer.setUserAnswer(dto.getUserAnswer());
-            answer.setSubmission(submission);
+            answer.setSubmission(submission); // Submission'ı Answer nesnesine bağlayın
             entities.add(answer);
+        }
+        submission.setAnswers(entities);
+        submissionRepository.save(submission);
+        log.info("Saved submission id {} with {} answers for quiz id {}", submission.getId(), entities.size(), quizId);
 
+        return resultDTO;
+    }
+
+    private SubmissionResultDTO calculateScores(List<AnswerDTO> answerDTOS) {
+        int correct = 0;
+        int wrong = 0;
+
+        for (AnswerDTO dto : answerDTOS) {
+            Long qId = dto.getQuestionId();
+
+            Question question = questionRepository.findById(qId)
+                    .orElseThrow(() -> new QuestionNotFoundException(String.format(questionNotFoundMessage, qId)));
 
             String submitted = dto.getUserAnswer() == null ? "" : dto.getUserAnswer().trim();
             String correctAnswer = question.getRightAnswer() == null ? "" : question.getRightAnswer().trim();
+
             if (submitted.equalsIgnoreCase(correctAnswer)) {
                 correct++;
             } else {
                 wrong++;
             }
         }
-        submission.setAnswers(entities);
-        submissionRepository.save(submission);
-        log.info("Saved submission id {} with {} answers for quiz id {}", submission.getId(), entities.size(), quizId);
 
         int total = correct + wrong;
         double percentage = total == 0 ? 0.0 : (100.0 * correct) / total;
+
         return new SubmissionResultDTO(correct, wrong, total, percentage);
+    }
+
+    private List<QuestionDTO> createQuestionsOfTheQuiz(String category, int noOfQuestions) throws QuestionNotFoundException, NotEnoughQuestionsException {
+        Category cat;
+        try {
+            cat = Category.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new CategoryNotExistException(String.format(categoryNotExistMessage, category));
+        }
+        List<QuestionDTO> list = new ArrayList<>(questionRepository.findByCategory(cat)
+                .stream()
+                .map(questionMapper::questionToQuestionDTO)
+                .toList());
+
+        if (list.size() < noOfQuestions) {
+            throw new NotEnoughQuestionsException(String.format(notEnoughQuestionsMessage, category, noOfQuestions, list.size()));
+        }
+        Collections.shuffle(list);
+
+        return list.subList(0, noOfQuestions);
     }
 }
