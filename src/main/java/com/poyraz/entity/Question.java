@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Entity
 public class Question {
-    @Column
+   
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;

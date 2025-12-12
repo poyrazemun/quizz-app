@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @Entity
 public class Answer {
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Quiz {
-    @Column
+    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
