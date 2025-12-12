@@ -13,4 +13,3 @@ public class SubmissionResultDTO {
     private int totalQuestions;
     private double percentage;
 }
-

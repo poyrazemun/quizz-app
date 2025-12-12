@@ -79,7 +79,7 @@ public class QuizServiceImpl implements QuizService {
         } catch (IllegalArgumentException e) {
             throw new CategoryNotExistException(String.format(categoryNotExistMessage, category));
         }
-        List<QuestionDTO> list = new java.util.ArrayList<>(questionRepository.findByCategory(cat)
+        List<QuestionDTO> list = new ArrayList<>(questionRepository.findByCategory(cat)
                 .stream()
                 .map(questionMapper::questionToQuestionDTO)
                 .toList());

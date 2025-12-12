@@ -1,17 +1,17 @@
 {
-  "submitterName": "Alice",
+  "submitterName": "Test User",
   "answers": [
     {
-      "questionId": 101,
-      "userAnswer": "B"
+      "questionId": 1,
+      "userAnswer": "String value"
     },
     {
-      "questionId": 102,
-      "userAnswer": "D"
+      "questionId": 2,
+      "userAnswer": "String value"
     },
     {
-      "questionId": 103,
-      "userAnswer": "A"
+      "questionId": 3,
+      "userAnswer": "String value"
     }
   ]
 }
