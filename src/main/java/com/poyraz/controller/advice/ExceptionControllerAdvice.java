@@ -2,10 +2,7 @@ package com.poyraz.controller.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.poyraz.dto.ErrorDTO;
-import com.poyraz.exceptions.CategoryNotExistException;
-import com.poyraz.exceptions.NotEnoughQuestionsException;
-import com.poyraz.exceptions.QuestionNotFoundException;
-import com.poyraz.exceptions.QuizNotFoundException;
+import com.poyraz.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +60,16 @@ public class ExceptionControllerAdvice {
                 categoryNotExistException.getMessage()
         );
         ErrorDTO errorDTO = buildErrorDTO(categoryNotExistException.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleUsernameAlreadyExistException(UsernameAlreadyExistsException usernameAlreadyExistsException, HttpServletRequest request) {
+        log.warn("UsernameAlreadyExistsException at URI={} - message={}",
+                request.getRequestURI(),
+                usernameAlreadyExistsException.getMessage()
+        );
+        ErrorDTO errorDTO = buildErrorDTO(usernameAlreadyExistsException.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(errorDTO.getError()).body(errorDTO);
     }
 
