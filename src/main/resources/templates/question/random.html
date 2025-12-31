@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/question.css}"/>
 </head>
 <body>
+<div th:insert="~{fragments/header :: header}"></div>
 <div class="random-question">
     <h2 th:text="${question.questionText}">Random question</h2>
     <ul>

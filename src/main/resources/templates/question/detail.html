@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/question.css}"/>
 </head>
 <body>
+<div th:insert="~{fragments/header :: header}"></div>
 <div class="question-detail">
     <h2 th:text="${question.questionText}">Question text</h2>
     <ul>

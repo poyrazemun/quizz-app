@@ -1,4 +1,4 @@
-package com.poyraz.controller;
+package com.poyraz.controller.securityControllers;
 
 import com.poyraz.dto.RegistrationResponseDTO;
 import com.poyraz.dto.RegistrationUserDTO;

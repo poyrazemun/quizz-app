@@ -10,7 +10,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,11 +40,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/question/**", "/quiz/**", "/auth/register"))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                ("/auth/register")
-                        ).permitAll()
+                                "/login", "/auth/register/**", "/logout-success")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/ui/questions").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ui/question/random").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ui/question/{id}/view").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ui/question/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/ui/question/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ui/question/edit").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/ui/question/{id}/delete").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.POST, "/question/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/question/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/quiz/create").hasRole("ADMIN")
@@ -53,6 +61,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/quiz/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/ui/questions", true)
+                        .permitAll())
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/logout-success")
+                        .permitAll())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();

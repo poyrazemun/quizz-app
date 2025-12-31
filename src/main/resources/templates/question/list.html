@@ -6,11 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/question.css}"/>
 </head>
 <body>
-<div class="header">
-    <h1>Questions</h1>
-    <a class="btn" th:href="@{/ui/question/add}">Add Question</a>
-    <a class="btn" th:href="@{/ui/question/random}">Random Question</a>
-</div>
+<div th:insert="~{fragments/header :: header}"></div>
 <div>
     <table class="question-table">
         <thead>

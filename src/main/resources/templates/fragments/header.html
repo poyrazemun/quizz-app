@@ -1,19 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:replace="~{::title}">QuizzApp</title>
     <link rel="stylesheet" th:href="@{/css/question.css}">
 </head>
 <body>
-<nav class="navbar">
-    <a class="nav-brand" th:href="@{/}">QuizzApp</a>
-    <ul class="nav">
-        <li><a th:href="@{/ui/questions}">Questions</a></li>
-        <li><a th:href="@{/ui/question/add}">Add Question</a></li>
-        <li><a th:href="@{/ui/question/random}">Random Question</a></li>
-    </ul>
-</nav>
+<div th:replace="~{::header}" class="site-header">
+
+    <!-- Header fragment only: navigation + auth controls -->
+    <div th:fragment="header" xmlns:th="http://www.thymeleaf.org"
+         xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+        <nav class="navbar">
+            <div class="nav-left">
+                <a th:href="@{/ui/questions}">Questions</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/question/add}">Add Question</a>
+                <a th:href="@{/ui/question/random}">Random Question</a>
+            </div>
+            <div class="nav-right">
+                <span sec:authorize="isAuthenticated()">Hello, <strong sec:authentication="name">user</strong></span>
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"
+                      style="display:inline; margin-left:8px;">
+                    <button type="submit" class="btn-logout">Logout</button>
+                </form>
+
+                <a sec:authorize="isAnonymous()" th:href="@{/login}" style="margin-left:8px;">Login</a>
+                <a sec:authorize="isAnonymous()" th:href="@{/auth/register}" style="margin-left:8px;">Register</a>
+            </div>
+        </nav>
+        <!-- spacer to reserve navbar height and avoid content overlap -->
+        <div class="header-spacer" aria-hidden="true"></div>
+    </div>
+</div>
 <div class="container">
     <div th:replace="~{::section}"></div>
 </div>

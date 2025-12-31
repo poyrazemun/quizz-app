@@ -86,7 +86,7 @@ public class QuestionWebController {
         try {
             questionService.deleteQuestionById(id);
         } catch (QuestionNotFoundException e) {
-            // Could add a flash message; for simplicity, ignore and continue
+            // I should log the exception here
         }
         return "redirect:/ui/questions";
     }

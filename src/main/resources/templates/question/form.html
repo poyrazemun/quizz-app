@@ -6,10 +6,10 @@
     <link rel="stylesheet" th:href="@{/css/question.css}"/>
 </head>
 <body>
+<div th:insert="~{fragments/header :: header}"></div>
 <div class="form-container">
     <h2>Add Question</h2>
     <form th:action="@{/ui/question/add}" th:object="${questionDTO}" method="post">
-
         <input type="hidden" th:field="*{id}">
 
         <div class="form-row">
