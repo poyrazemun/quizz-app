@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{::title}">QuizzApp</title>
+    <link rel="stylesheet" th:href="@{/css/question.css}">
+</head>
+<body>
+<nav class="navbar">
+    <a class="nav-brand" th:href="@{/}">QuizzApp</a>
+    <ul class="nav">
+        <li><a th:href="@{/ui/questions}">Questions</a></li>
+        <li><a th:href="@{/ui/question/add}">Add Question</a></li>
+        <li><a th:href="@{/ui/question/random}">Random Question</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <div th:replace="~{::section}"></div>
+</div>
+</body>
+</html>

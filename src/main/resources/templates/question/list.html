@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Questions</title>
+    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+</head>
+<body>
+<div class="header">
+    <h1>Questions</h1>
+    <a class="btn" th:href="@{/ui/question/add}">Add Question</a>
+    <a class="btn" th:href="@{/ui/question/random}">Random Question</a>
+</div>
+<div>
+    <table class="question-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Question</th>
+            <th>Category</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="q : ${questions}">
+            <td th:text="${q.id}">1</td>
+            <td th:text="${q.questionText}">Sample?</td>
+            <td th:text="${q.category}">JAVA</td>
+            <td th:text="${q.difficultyLevel}">Easy</td>
+            <td>
+                <a th:href="@{'/ui/question/' + ${q.id} + '/view'}">View</a>
+                &nbsp;|&nbsp;
+                <a th:href="@{/ui/question/edit(id=${q.id})}">Edit</a>
+                &nbsp;|&nbsp;
+                <a th:href="@{'/ui/question/' + ${q.id} + '/delete'}"
+                   onclick="if(!(confirm('Are you sure to delete this question?'))) return false">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(questions)}">
+            <td colspan="5">No questions found.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a class="btn" th:if="${hasPrevious}" th:href="@{'/ui/questions'(page=${currentPage - 1})}">Previous</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{'/ui/questions'(page=${i})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? ' current'">1</a>
+        </span>
+        <a class="btn" th:if="${hasNext}" th:href="@{'/ui/questions'(page=${currentPage + 1})}">Next</a>
+    </div>
+</div>
+</body>
+</html>

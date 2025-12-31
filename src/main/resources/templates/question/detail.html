@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${question.questionText}">Question Detail</title>
+    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+</head>
+<body>
+<div class="question-detail">
+    <h2 th:text="${question.questionText}">Question text</h2>
+    <ul>
+        <li th:text="${question.option1}">option1</li>
+        <li th:text="${question.option2}">option2</li>
+        <li th:text="${question.option3}">option3</li>
+        <li th:if="${question.option4 != null}" th:text="${question.option4}">option4</li>
+    </ul>
+    <p><strong>Category:</strong> <span th:text="${question.category}">JAVA</span></p>
+    <p><strong>Difficulty:</strong> <span th:text="${question.difficultyLevel}">Easy</span></p>
+    <p><strong>Answer:</strong> <span th:text="${question.rightAnswer}">A</span></p>
+    <a th:href="@{/ui/questions}">Back to list</a>
+</div>
+</body>
+</html>

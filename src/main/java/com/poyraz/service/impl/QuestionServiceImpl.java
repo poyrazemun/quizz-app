@@ -92,4 +92,10 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(questionMapper::questionToQuestionDTO)
                 .toList();
     }
+
+    @Override
+    public Page<QuestionDTO> getQuestionsPage(int page, int size) {
+        Page<Question> questionsPage = questionRepository.findAll(PageRequest.of(page, size));
+        return questionsPage.map(questionMapper::questionToQuestionDTO);
+    }
 }
