@@ -65,9 +65,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/ui/questions", true)
                         .permitAll())
-                .logout(logout -> logout.logoutUrl("/logout")
+                .logout(logout -> logout.logoutUrl("/logout")//Spring Security default logout URL, yazmasam da olurdu
                         .logoutSuccessUrl("/logout-success")
                         .permitAll())
+                .exceptionHandling(conf -> conf.accessDeniedPage("/access-denied"))
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();

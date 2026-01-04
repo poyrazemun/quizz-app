@@ -54,4 +54,9 @@ public class LoginController {
         return "redirect:/login?registered";
     }
 
+    @GetMapping("/access-denied")
+    public String showAccessDeniedPage() {
+        return "auth/access-denied";
+    }
+
 }
