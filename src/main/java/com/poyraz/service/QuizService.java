@@ -1,11 +1,13 @@
 package com.poyraz.service;
 
 import com.poyraz.dto.QuestionWrapperDTO;
+import com.poyraz.dto.QuizDTO;
 import com.poyraz.dto.SubmissionDTO;
 import com.poyraz.dto.SubmissionResultDTO;
 import com.poyraz.exceptions.NotEnoughQuestionsException;
 import com.poyraz.exceptions.QuestionNotFoundException;
 import com.poyraz.exceptions.QuizNotFoundException;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +16,11 @@ public interface QuizService {
 
     List<QuestionWrapperDTO> getQuizQuestionsById(long id) throws QuizNotFoundException;
 
-
     SubmissionResultDTO submitQuiz(long quizId, SubmissionDTO submissionDTO) throws QuizNotFoundException;
+
+    Page<QuizDTO> getQuizzesPage(int page, int size, String sortBy, String direction);
+
+    void deleteQuizById(long id) throws QuizNotFoundException;
+
 
 }

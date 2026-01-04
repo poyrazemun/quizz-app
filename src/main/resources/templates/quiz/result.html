@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="result-container">
+    <h2>Result for Quiz <span th:text="${quizId}"></span></h2>
+    <p>Correct Answers: <span th:text="${result.correctAnswers}"></span></p>
+    <p>Wrong Answers: <span th:text="${result.wrongAnswers}"></span></p>
+    <p>Total Questions: <span th:text="${result.totalQuestions}"></span></p>
+    <p>Percentage: <span th:text="${result.percentage}"></span>%</p>
+
+    <a th:href="@{/ui/quizzes}">Back to quizzes</a>
+</div>
+</body>
+</html>

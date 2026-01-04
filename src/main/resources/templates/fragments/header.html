@@ -15,6 +15,8 @@
             <div class="nav-left">
                 <a th:href="@{/ui/questions}">Questions</a>
                 <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/question/add}">Add Question</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/ui/quiz/create}">Create Quiz</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/quizzes}">View Quizzes</a>
                 <a th:href="@{/ui/question/random}">Random Question</a>
             </div>
             <div class="nav-right">

@@ -15,8 +15,12 @@ import com.poyraz.repository.QuizRepository;
 import com.poyraz.repository.SubmissionRepository;
 import com.poyraz.service.QuizService;
 import com.poyraz.util.QuestionMapper;
+import com.poyraz.util.QuizMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,6 +47,7 @@ public class QuizServiceImpl implements QuizService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
     private final SubmissionRepository submissionRepository;
+    private final QuizMapper quizMapper;
 
 
     @Override
@@ -157,4 +162,29 @@ public class QuizServiceImpl implements QuizService {
 
         return list.subList(0, noOfQuestions);
     }
+
+
+    @Override
+    public Page<QuizDTO> getQuizzesPage(int page, int size, String sortBy, String direction) {
+        Sort sort = Sort.by(sortBy == null || sortBy.isBlank() ? "id" : sortBy);
+        if ("desc".equalsIgnoreCase(direction)) {
+            sort = sort.descending();
+        } else {
+            sort = sort.ascending();
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<Quiz> pageResult = quizRepository.findAll(pageRequest);
+        return pageResult.map(quizMapper::quizToQuizDTO);
+    }
+
+    @Override
+    public void deleteQuizById(long id) throws QuizNotFoundException {
+        if (quizRepository.existsById(id)) {
+            quizRepository.deleteById(id);
+        } else {
+            throw new QuizNotFoundException(String.format(quizNotFoundMessage, id));
+        }
+    }
+
 }

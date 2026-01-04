@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzes</title>
+    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div>
+    <h2>Quizzes</h2>
+    <table class="question-table">
+        <thead>
+        <tr>
+            <th><a th:href="@{'/ui/quizzes'(page=${0}, sortBy='id', direction=${direction == 'asc' ? 'desc' : 'asc'})}">ID</a>
+            </th>
+            <th>
+                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='quizName', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Name</a>
+            </th>
+            <th>
+                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='category', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Category</a>
+            </th>
+            <th>
+                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='questionCount', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Questions</a>
+            </th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="q : ${quizzes}">
+            <td th:text="${q.id}">1</td>
+            <td th:text="${q.quizName}">Sample Quiz</td>
+            <td th:text="${q.category}">JAVA</td>
+            <td th:text="${q.questionCount}">5</td>
+            <td>
+                <a th:href="@{'/ui/quiz/' + ${q.id} + '/view'}">View</a>
+                &nbsp;|&nbsp;
+                <a th:href="@{'/ui/quiz/' + ${q.id} + '/delete'}"
+                   onclick="if(!(confirm('Are you sure to delete this quiz?'))) return false">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(quizzes)}">
+            <td colspan="5">No quizzes found.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a class="btn" th:if="${hasPrevious}"
+           th:href="@{'/ui/quizzes'(page=${currentPage - 1}, sortBy=${sortBy}, direction=${direction})}">Previous</a>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{'/ui/quizzes'(page=${i}, sortBy=${sortBy}, direction=${direction})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? ' current'">1</a>
+        </span>
+
+        <a class="btn" th:if="${hasNext}"
+           th:href="@{'/ui/quizzes'(page=${currentPage + 1}, sortBy=${sortBy}, direction=${direction})}">Next</a>
+    </div>
+</div>
+</body>
+</html>
