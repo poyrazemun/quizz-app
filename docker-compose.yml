@@ -1,0 +1,36 @@
+services:
+  application:
+    image: quizzapp:1.0
+    container_name: quizzapp-spring-container
+    ports:
+      - "8080:8080"
+    networks:
+      - quizzapp-mysql-network
+    environment:
+      - MYSQL_USERNAME=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - mysqldb
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+
+  mysqldb:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=quizzapp
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - quizzapp-mysql-network
+
+networks:
+  quizzapp-mysql-network:
+    driver: bridge
+    name: quizzapp-mysql-network
+    external: true
