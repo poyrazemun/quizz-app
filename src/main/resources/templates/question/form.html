@@ -3,69 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Question</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
-<div class="form-container">
-    <h2>Add Question</h2>
-    <form th:action="@{/ui/question/add}" th:object="${questionDTO}" method="post">
-        <input type="hidden" th:field="*{id}">
+<div class="container">
+    <div class="form-container">
+        <h2>Add Question</h2>
+        <form th:action="@{/ui/question/add}" th:object="${questionDTO}" method="post">
+            <input type="hidden" th:field="*{id}">
 
-        <div class="form-row">
-            <label for="questionText">Question</label>
-            <input type="text" id="questionText" th:field="*{questionText}"/>
-            <div class="error" th:if="${#fields.hasErrors('questionText')}" th:errors="*{questionText}"></div>
-        </div>
+            <div class="form-row">
+                <label for="questionText">Question</label>
+                <input type="text" id="questionText" th:field="*{questionText}"
+                       th:classappend="${#fields.hasErrors('questionText')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('questionText')}" th:errors="*{questionText}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="option1">Option 1</label>
-            <input type="text" id="option1" th:field="*{option1}"/>
-            <div class="error" th:if="${#fields.hasErrors('option1')}" th:errors="*{option1}"></div>
-        </div>
+            <div class="form-row">
+                <label for="option1">Option 1</label>
+                <input type="text" id="option1" th:field="*{option1}"
+                       th:classappend="${#fields.hasErrors('option1')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('option1')}" th:errors="*{option1}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="option2">Option 2</label>
-            <input type="text" id="option2" th:field="*{option2}"/>
-            <div class="error" th:if="${#fields.hasErrors('option2')}" th:errors="*{option2}"></div>
-        </div>
+            <div class="form-row">
+                <label for="option2">Option 2</label>
+                <input type="text" id="option2" th:field="*{option2}"
+                       th:classappend="${#fields.hasErrors('option2')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('option2')}" th:errors="*{option2}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="option3">Option 3</label>
-            <input type="text" id="option3" th:field="*{option3}"/>
-            <div class="error" th:if="${#fields.hasErrors('option3')}" th:errors="*{option3}"></div>
-        </div>
+            <div class="form-row">
+                <label for="option3">Option 3</label>
+                <input type="text" id="option3" th:field="*{option3}"
+                       th:classappend="${#fields.hasErrors('option3')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('option3')}" th:errors="*{option3}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="option4">Option 4 (optional)</label>
-            <input type="text" id="option4" th:field="*{option4}"/>
-        </div>
+            <div class="form-row">
+                <label for="option4">Option 4 (optional)</label>
+                <input type="text" id="option4" th:field="*{option4}"/>
+            </div>
 
-        <div class="form-row">
-            <label for="rightAnswer">Correct Answer</label>
-            <input type="text" id="rightAnswer" th:field="*{rightAnswer}"/>
-            <div class="error" th:if="${#fields.hasErrors('rightAnswer')}" th:errors="*{rightAnswer}"></div>
-        </div>
+            <div class="form-row">
+                <label for="rightAnswer">Correct Answer</label>
+                <input type="text" id="rightAnswer" th:field="*{rightAnswer}"
+                       th:classappend="${#fields.hasErrors('rightAnswer')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('rightAnswer')}" th:errors="*{rightAnswer}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="category">Category</label>
-            <select id="category" th:field="*{category}">
-                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
-            </select>
-        </div>
+            <div class="form-row">
+                <label for="category">Category</label>
+                <select id="category" th:field="*{category}">
+                    <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+                </select>
+            </div>
 
-        <div class="form-row">
-            <label for="difficultyLevel">Difficulty</label>
-            <select id="difficultyLevel" th:field="*{difficultyLevel}">
-                <option th:each="d : ${difficultyLevels}" th:value="${d}" th:text="${d}"></option>
-            </select>
-        </div>
+            <div class="form-row">
+                <label for="difficultyLevel">Difficulty</label>
+                <select id="difficultyLevel" th:field="*{difficultyLevel}">
+                    <option th:each="d : ${difficultyLevels}" th:value="${d}" th:text="${d}"></option>
+                </select>
+            </div>
 
-        <div class="form-row">
-            <button type="submit">Save</button>
-            <a th:href="@{/ui/questions}">Cancel</a>
-        </div>
-    </form>
+            <div class="form-actions">
+                <a th:href="@{/ui/questions}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

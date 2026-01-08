@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${question.questionText}">Question Detail</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
-<div class="question-detail">
+<div class="question-detail card">
     <h2 th:text="${question.questionText}">Question text</h2>
     <ul>
         <li th:text="${question.option1}">option1</li>

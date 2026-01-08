@@ -2,32 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Logout successful</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .container {
-            border: 1px solid #ddd;
-            display: inline-block;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .login-link {
-            text-decoration: none;
-            color: blue;
-        }
-    </style>
+    <title>Logged out</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<div class="container">
-    <h2>Thanks for visiting!</h2>
-    <hr>
-    <a th:href="@{/login}" class="login-link">Click here to login.</a>
+<div th:replace="~{fragments/auth-layout :: authLayout}">
+    <div th:fragment="section">
+        <h2>Thanks for visiting!</h2>
+        <p style="color:var(--muted)">You have successfully been logged out.</p>
+        <div class="auth-actions" style="justify-content:center; margin-top:16px">
+            <a th:href="@{/login}" class="btn">Login again</a>
+        </div>
+    </div>
 </div>
 </body>
 </html>

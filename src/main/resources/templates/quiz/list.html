@@ -3,61 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <title>Quizzes</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
+<div class="container">
+    <div class="table-container">
+        <h2>Quizzes</h2>
+        <table class="question-table">
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='id', direction=${direction == 'asc' ? 'desc' : 'asc'})}">ID</a>
+                </th>
+                <th>
+                    <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='quizName', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Name</a>
+                </th>
+                <th>
+                    <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='category', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Category</a>
+                </th>
+                <th>
+                    <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='questionCount', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Questions</a>
+                </th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="q : ${quizzes}">
+                <td th:text="${q.id}">1</td>
+                <td th:text="${q.quizName}">Sample Quiz</td>
+                <td th:text="${q.category}">JAVA</td>
+                <td th:text="${q.questionCount}">5</td>
+                <td>
+                    <a th:href="@{'/ui/quiz/' + ${q.id} + '/view'}" class="action-btn action-view"
+                       th:attr="aria-label=${'View quiz ' + q.id}">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                        </svg>
+                    </a>
+                    <a th:href="@{'/ui/quiz/' + ${q.id} + '/delete'}" class="action-btn action-delete"
+                       th:attr="aria-label=${'Delete quiz ' + q.id}"
+                       onclick="if(!(confirm('Delete this quiz?'))) return false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6 19c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(quizzes)}">
+                <td colspan="5">No quizzes found.</td>
+            </tr>
+            </tbody>
+        </table>
 
-<div>
-    <h2>Quizzes</h2>
-    <table class="question-table">
-        <thead>
-        <tr>
-            <th><a th:href="@{'/ui/quizzes'(page=${0}, sortBy='id', direction=${direction == 'asc' ? 'desc' : 'asc'})}">ID</a>
-            </th>
-            <th>
-                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='quizName', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Name</a>
-            </th>
-            <th>
-                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='category', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Category</a>
-            </th>
-            <th>
-                <a th:href="@{'/ui/quizzes'(page=${0}, sortBy='questionCount', direction=${direction == 'asc' ? 'desc' : 'asc'})}">Questions</a>
-            </th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="q : ${quizzes}">
-            <td th:text="${q.id}">1</td>
-            <td th:text="${q.quizName}">Sample Quiz</td>
-            <td th:text="${q.category}">JAVA</td>
-            <td th:text="${q.questionCount}">5</td>
-            <td>
-                <a th:href="@{'/ui/quiz/' + ${q.id} + '/view'}">View</a>
-                &nbsp;|&nbsp;
-                <a th:href="@{'/ui/quiz/' + ${q.id} + '/delete'}"
-                   onclick="if(!(confirm('Are you sure to delete this quiz?'))) return false">Delete</a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(quizzes)}">
-            <td colspan="5">No quizzes found.</td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a class="btn" th:if="${hasPrevious}"
+               th:href="@{'/ui/quizzes'(page=${currentPage - 1}, sortBy=${sortBy}, direction=${direction})}">Previous</a>
 
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a class="btn" th:if="${hasPrevious}"
-           th:href="@{'/ui/quizzes'(page=${currentPage - 1}, sortBy=${sortBy}, direction=${direction})}">Previous</a>
-
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
             <a th:href="@{'/ui/quizzes'(page=${i}, sortBy=${sortBy}, direction=${direction})}"
                th:text="${i + 1}"
                th:classappend="${i == currentPage} ? ' current'">1</a>
         </span>
 
-        <a class="btn" th:if="${hasNext}"
-           th:href="@{'/ui/quizzes'(page=${currentPage + 1}, sortBy=${sortBy}, direction=${direction})}">Next</a>
+            <a class="btn" th:if="${hasNext}"
+               th:href="@{'/ui/quizzes'(page=${currentPage + 1}, sortBy=${sortBy}, direction=${direction})}">Next</a>
+        </div>
     </div>
 </div>
 </body>

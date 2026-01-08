@@ -3,37 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Quiz</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
-<div class="form-container">
-    <h2>Create Quiz</h2>
-    <form th:action="@{/ui/quiz/create}" th:object="${quizForm}" method="post">
-        <div class="form-row">
-            <label for="quizName">Quiz Name</label>
-            <input type="text" id="quizName" th:field="*{quizName}"/>
-            <div class="error" th:if="${#fields.hasErrors('quizName')}" th:errors="*{quizName}"></div>
-        </div>
+<div class="container">
+    <div class="form-container">
+        <h2>Create Quiz</h2>
+        <form th:action="@{/ui/quiz/create}" th:object="${quizForm}" method="post">
+            <div class="form-row">
+                <label for="quizName">Quiz Name</label>
+                <input type="text" id="quizName" th:field="*{quizName}"
+                       th:classappend="${#fields.hasErrors('quizName')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('quizName')}" th:errors="*{quizName}"></div>
+            </div>
 
-        <div class="form-row">
-            <label for="category">Category</label>
-            <select id="category" th:field="*{category}">
-                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
-            </select>
-        </div>
+            <div class="form-row">
+                <label for="category">Category</label>
+                <select id="category" th:field="*{category}"
+                        th:classappend="${#fields.hasErrors('category')} ? ' input-error' : ''">
+                    <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+                </select>
+            </div>
 
-        <div class="form-row">
-            <label for="noOfQuestions">Number Of Questions</label>
-            <input type="number" id="noOfQuestions" th:field="*{noOfQuestions}" min="1"/>
-            <div class="error" th:if="${#fields.hasErrors('noOfQuestions')}" th:errors="*{noOfQuestions}"></div>
-        </div>
+            <div class="form-row">
+                <label for="noOfQuestions">Number Of Questions</label>
+                <input type="number" id="noOfQuestions" th:field="*{noOfQuestions}" min="1" max="100"
+                       th:classappend="${#fields.hasErrors('noOfQuestions')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('noOfQuestions')}" th:errors="*{noOfQuestions}"></div>
+            </div>
 
-        <div class="form-row">
-            <button type="submit">Create</button>
-            <a th:href="@{/ui/questions}">Cancel</a>
-        </div>
-    </form>
+            <div class="form-actions">
+                <a th:href="@{/ui/questions}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn">Create</button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

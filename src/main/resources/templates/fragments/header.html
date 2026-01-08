@@ -1,41 +1,57 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title th:replace="~{::title}">QuizzApp</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}">
-</head>
-<body>
-<div th:replace="~{::header}" class="site-header">
+<!-- fragment-only header: use with th:insert or th:replace -->
+<div th:fragment="header" class="site-header" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 
-    <!-- Header fragment only: navigation + auth controls -->
-    <div th:fragment="header" xmlns:th="http://www.thymeleaf.org"
-         xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-        <nav class="navbar">
-            <div class="nav-left">
-                <a th:href="@{/ui/questions}">Questions</a>
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/question/add}">Add Question</a>
-                <a sec:authorize="isAuthenticated()" th:href="@{/ui/quiz/create}">Create Quiz</a>
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/quizzes}">View Quizzes</a>
-                <a th:href="@{/ui/question/random}">Random Question</a>
+    <nav class="navbar"
+         style="position:fixed; left:0; right:0; top:0; height:64px; display:flex; align-items:center; justify-content:flex-start; padding:8px 20px 8px 20px; padding-right:80px; z-index:1000;">
+        <div class="nav-brand" style="flex:0 0 auto;">
+            <a th:href="@{/ui/questions}" class="brand-link">QuizzApp</a>
+        </div>
+
+        <!-- Inline styles enforce absolute positioning so the button cannot push layout -->
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu"
+                aria-label="Toggle navigation"
+                style="position:absolute; right:18px; top:50%; transform:translateY(-50%);">☰
+        </button>
+
+        <div id="nav-menu" class="nav-menu"
+             style="display:flex; gap:18px; align-items:center; margin-left:auto;">
+            <div class="nav-left" style="display:flex; gap:12px; align-items:center;">
+                <a th:href="@{/ui/questions}" class="nav-link">Questions</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/question/add}" class="nav-link">Add Question</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/ui/quiz/create}" class="nav-link">Create Quiz</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/ui/quizzes}" class="nav-link">View Quizzes</a>
+                <a th:href="@{/ui/question/random}" class="nav-link">Random Question</a>
             </div>
-            <div class="nav-right">
-                <span sec:authorize="isAuthenticated()">Hello, <strong sec:authentication="name">user</strong></span>
+            <div class="nav-right" style="display:flex; gap:12px; align-items:center;">
+                <span sec:authorize="isAuthenticated()" class="greeting">Hello, <strong
+                        sec:authentication="name">user</strong></span>
                 <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"
                       style="display:inline; margin-left:8px;">
-                    <button type="submit" class="btn-logout">Logout</button>
+                    <button type="submit" class="btn btn-logout">Logout</button>
                 </form>
 
-                <a sec:authorize="isAnonymous()" th:href="@{/login}" style="margin-left:8px;">Login</a>
-                <a sec:authorize="isAnonymous()" th:href="@{/auth/register}" style="margin-left:8px;">Register</a>
+                <a sec:authorize="isAnonymous()" th:href="@{/login}" class="nav-link auth-link">Login</a>
+                <a sec:authorize="isAnonymous()" th:href="@{/auth/register}" class="nav-link auth-link">Register</a>
             </div>
-        </nav>
-        <!-- spacer to reserve navbar height and avoid content overlap -->
-        <div class="header-spacer" aria-hidden="true"></div>
-    </div>
+        </div>
+    </nav>
+
+    <!-- spacer to reserve navbar height and avoid content overlap -->
+    <div class="header-spacer" aria-hidden="true" style="height:64px;"></div>
+
+    <!-- small script to toggle mobile menu (no external deps) -->
+    <script>
+        (function () {
+            var toggle = document.querySelector('.nav-toggle');
+            var menu = document.getElementById('nav-menu');
+            if (!toggle || !menu) return;
+            toggle.addEventListener('click', function () {
+                var expanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', String(!expanded));
+                menu.classList.toggle('open');
+            });
+        })();
+    </script>
 </div>
-<div class="container">
-    <div th:replace="~{::section}"></div>
-</div>
-</body>
-</html>

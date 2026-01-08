@@ -3,50 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Questions</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
-<div th:insert="~{fragments/header :: header}"></div>
-<div>
-    <table class="question-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Question</th>
-            <th>Category</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="q : ${questions}">
-            <td th:text="${q.id}">1</td>
-            <td th:text="${q.questionText}">Sample?</td>
-            <td th:text="${q.category}">JAVA</td>
-            <td th:text="${q.difficultyLevel}">Easy</td>
-            <td>
-                <a th:href="@{'/ui/question/' + ${q.id} + '/view'}">View</a>
-                &nbsp;|&nbsp;
-                <a th:href="@{/ui/question/edit(id=${q.id})}">Edit</a>
-                &nbsp;|&nbsp;
-                <a th:href="@{'/ui/question/' + ${q.id} + '/delete'}"
-                   onclick="if(!(confirm('Are you sure to delete this question?'))) return false">Delete</a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(questions)}">
-            <td colspan="5">No questions found.</td>
-        </tr>
-        </tbody>
-    </table>
+<div th:replace="~{fragments/header :: header}"></div>
+<div class="container">
+    <div class="table-container">
+        <h2>Questions</h2>
+        <table class="question-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="q : ${questions}">
+                <td th:text="${q.id}">1</td>
+                <td th:text="${q.questionText}">Sample?</td>
+                <td th:text="${q.category}">JAVA</td>
+                <td th:text="${q.difficultyLevel}">Easy</td>
+                <td>
+                    <!-- View -->
+                    <a th:href="@{'/ui/question/' + ${q.id} + '/view'}" class="action-btn action-view"
+                       th:attr="aria-label=${'View question ' + q.id}">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                        </svg>
+                    </a>
 
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a class="btn" th:if="${hasPrevious}" th:href="@{'/ui/questions'(page=${currentPage - 1})}">Previous</a>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <!-- Edit -->
+                    <a th:href="@{/ui/question/edit(id=${q.id})}" class="action-btn action-edit"
+                       th:attr="aria-label=${'Edit question ' + q.id}">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+                        </svg>
+                    </a>
+
+                    <!-- Delete -->
+                    <a th:href="@{'/ui/question/' + ${q.id} + '/delete'}" class="action-btn action-delete"
+                       th:attr="aria-label=${'Delete question ' + q.id}"
+                       onclick="if(!(confirm('Are you sure to delete this question?'))) return false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6 19c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(questions)}">
+                <td colspan="5">No questions found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${hasPrevious}" th:href="@{'/ui/questions'(page=${currentPage - 1})}" class="prev">Previous</a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
             <a th:href="@{'/ui/questions'(page=${i})}"
                th:text="${i + 1}"
                th:classappend="${i == currentPage} ? ' current'">1</a>
         </span>
-        <a class="btn" th:if="${hasNext}" th:href="@{'/ui/questions'(page=${currentPage + 1})}">Next</a>
+            <a th:if="${hasNext}" th:href="@{'/ui/questions'(page=${currentPage + 1})}" class="next">Next</a>
+        </div>
     </div>
 </div>
 </body>

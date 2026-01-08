@@ -3,41 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<h2>Login</h2>
+<div th:replace="~{fragments/auth-layout :: authLayout}">
+    <div th:fragment="section">
+        <h2>Login</h2>
 
-<form th:action="@{/login}" method="post">
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <div class="form-row">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-row">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="auth-actions">
+                <a th:href="@{/auth/register}" role="button" class="btn btn-secondary"><span>Register</span></a>
+                <button type="submit" role="button" class="btn btn-secondary">Login</button>
+            </div>
+        </form>
+
+        <div th:if="${param.error}">
+            <p class="error">Invalid username or password</p>
+        </div>
+
+        <div th:if="${param.logout}">
+            <p class="" style="color: #34d399">You have been logged out</p>
+        </div>
+
+        <div th:if="${param.registered}">
+            <p class="" style="color: #34d399">Registration successful. Please log in with your new account.</p>
+        </div>
     </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-
-    <button type="submit">Login</button>
-</form>
-
-<div th:if="${param.error}">
-    <p style="color:red;">Invalid username or password</p>
-</div>
-
-<div th:if="${param.logout}">
-    <p style="color:green;">You have been logged out</p>
-</div>
-
-<!-- Register link/button -->
-<div>
-    <p>Don't have an account?
-        <button type="button" th:onclick="|window.location='@{/auth/register}'|">Register</button>
-    </p>
-</div>
-
-<!-- Show message when redirected after successful registration -->
-<div th:if="${param.registered}">
-    <p style="color:green;">Registration successful. Please log in with your new account.</p>
 </div>
 </body>
 </html>

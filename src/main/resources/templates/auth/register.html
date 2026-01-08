@@ -3,26 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<h2>Register</h2>
+<div th:replace="~{fragments/auth-layout :: authLayout}">
+    <div th:fragment="section">
+        <h2>Register</h2>
 
-<form th:action="@{/auth/register/form}" th:object="${registrationUser}" method="post">
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" th:field="*{username}"/>
-        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        <form th:action="@{/auth/register/form}" th:object="${registrationUser}" method="post" class="auth-form">
+            <div class="form-row">
+                <label for="username">Username:</label>
+                <input type="text" id="username" th:field="*{username}"
+                       th:classappend="${#fields.hasErrors('username')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password:</label>
+                <input type="password" id="password" th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password')} ? ' input-error' : ''"/>
+                <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <div class="auth-actions">
+                <a th:href="@{/login}" role="button" class="btn btn-secondary"><span>Login</span></a>
+                <button type="submit" class="btn">Register</button>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" th:field="*{password}"/>
-        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-    </div>
-
-    <button type="submit">Register</button>
-</form>
-
-<p>Already have an account? <a th:href="@{/login}">Login</a></p>
+</div>
 </body>
 </html>

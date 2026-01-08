@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Access Denied</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<h2>Access Denied</h2>
-
-<div style="color:red;">
-    <p>You do not have permission to access this page.</p>
+<div th:replace="~{fragments/auth-layout :: authLayout}">
+    <div th:fragment="section">
+        <h2>Access Denied</h2>
+        <p style="color:var(--muted)">You do not have permission to access this page.</p>
+        <div class="auth-actions" style="justify-content:center; margin-top:12px">
+            <a th:href="@{/login}" class="btn btn-secondary">Login</a>
+            <a th:href="@{/ui/questions}" class="btn">Back to Questions</a>
+        </div>
+    </div>
 </div>
-
-
-<div>
-    <a th:href="@{/ui/questions}">Back to the questions list</a>
-</div>
-
 </body>
 </html>

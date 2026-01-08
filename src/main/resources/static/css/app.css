@@ -1,0 +1,855 @@
+/* Modern app styles for QuizzApp */
+:root {
+    --bg: #0f1724; /* deep navy */
+    --card: #0b1b2b;
+    --muted: #94a3b8;
+    --accent: #7c3aed; /* violet */
+    --accent-2: #06b6d4; /* teal */
+    --surface: #0f1724;
+    --glass: rgba(255, 255, 255, 0.03);
+    --text: #e6eef8;
+    --radius: 10px;
+    --max-width: 1100px;
+}
+
+/* Base reset */
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: #0a1620; /* solid dark background to avoid gradient banding */
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 24px auto;
+    padding: 0 18px 48px;
+}
+
+/* Global box-sizing to avoid subpixel rounding differences */
+*, *::before, *::after {
+    box-sizing: border-box
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 64px !important; /* override older CSS */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* ensure brand stays left */
+    /* reserve space for absolute toggle so items don't shift */
+    padding: 8px 80px 8px 20px;
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.06));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    z-index: 1000;
+}
+
+.header-spacer {
+    height: 64px !important
+}
+
+.brand-link {
+    font-weight: 800;
+    color: #c084fc; /* brighter violet */
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+    text-decoration: none;
+    font-size: 1.15rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-accent {
+    color: var(--accent);
+}
+
+.nav-toggle {
+    display: none !important; /* hide by default and make it hard to override */
+    position: absolute; /* take out of normal flow */
+    right: 18px; /* align with navbar padding */
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 8px;
+    z-index: 1100;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin-left: auto; /* push menu to the right */
+}
+
+.nav-left {
+    display: flex;
+    gap: 12px;
+    align-items: center
+}
+
+.nav-right {
+    display: flex;
+    gap: 12px;
+    align-items: center
+}
+
+.nav-link {
+    color: var(--text);
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    opacity: 0.95;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-1px);
+}
+
+.auth-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white !important;
+    border: none;
+}
+
+.greeting {
+    color: var(--muted);
+    font-weight: 500
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white;
+    border: none;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.85), rgba(6, 182, 212, 0.7));
+    color: white !important;
+    border: none;
+}
+
+.btn-logout {
+    background: #ef4444
+}
+
+/* Cards and surfaces */
+.card {
+    background-color: rgba(7, 18, 28, 0.72) !important; /* solid-ish translucent surface */
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+    min-height: 140px; /* prevent narrow cards from showing background band */
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+h1, h2, h3 {
+    margin: 0 0 8px 0;
+    color: var(--text)
+}
+
+/* Table upgrades */
+.question-table {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    margin-top: 12px;
+    overflow: hidden;
+    border-radius: 8px;
+    transform: translateZ(0); /* promote to own layer to reduce subpixel jitter */
+    table-layout: fixed;
+}
+
+.question-table thead th:nth-child(1) {
+    width: 60px
+}
+
+.question-table thead th:nth-child(2) {
+    width: calc(100% - 60px - 140px - 140px - 160px)
+}
+
+.question-table thead th:nth-child(3) {
+    width: 140px
+}
+
+.question-table thead th:nth-child(4) {
+    width: 140px
+}
+
+.question-table thead th:nth-child(5) {
+    width: 160px
+}
+
+/* Ensure the action column uses flexbox so icons are vertically centered regardless of zoom/subpixel rounding */
+.question-table tbody td:nth-child(5) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Ensure stable row height and consistent styling across zoom levels */
+.question-table tbody tr {
+    min-height: 64px; /* stable row base height */
+    background-color: transparent !important; /* transparent so container background shows through */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.02); /* subtle row separator */
+}
+
+.question-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important; /* subtle highlight on hover */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03); /* subtle row separator */
+}
+
+/* ID column should not wrap and should be centered */
+.question-table td:first-child, .question-table th:first-child {
+    white-space: nowrap;
+    text-align: center;
+    width: 60px;
+}
+
+/* Actions column should not wrap */
+.question-table td:last-child, .question-table th:last-child {
+    white-space: nowrap;
+    width: 160px;
+}
+
+.question-table th, .question-table td {
+    padding: 14px 18px !important;
+    line-height: 1.4 !important;
+    height: auto !important;
+    border-bottom: none !important;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 400;
+}
+
+.question-table td, .question-table th {
+    font-weight: 500 !important;
+    color: var(--text) !important;
+}
+
+.question-table thead th {
+    text-align: left;
+    font-weight: 700;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.03); /* subtle header background */
+}
+
+/* Action links in tables (View / Edit / Delete) */
+.question-table td a {
+    display: inline-block;
+    padding: 6px 8px;
+    margin-right: 6px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.question-table td a.action-view {
+    color: var(--accent-2);
+    background: rgba(6, 182, 212, 0.06);
+}
+
+.question-table td a.action-edit {
+    color: var(--accent);
+    background: rgba(124, 58, 237, 0.06);
+}
+
+.question-table td a.action-delete {
+    color: #ff7a7a;
+    background: rgba(255, 122, 122, 0.04);
+}
+
+.question-table td a:hover {
+    transform: none !important;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.35);
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Action icon buttons (small circular icon chips) */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 120ms ease, background 120ms ease;
+    color: var(--text);
+    background: transparent !important;
+    border: none !important;
+}
+
+.action-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor
+}
+
+.action-btn:hover {
+    transform: none !important;
+    background: rgba(255, 255, 255, 0.03)
+}
+
+.action-btn:active {
+    transform: translateY(-1px)
+}
+
+.action-view {
+    color: var(--accent-2)
+}
+
+.action-edit {
+    color: var(--accent)
+}
+
+.action-delete {
+    color: #ff7a7a
+}
+
+/* Pagination styling */
+.pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 18px;
+    align-items: center;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.pagination a.current {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white !important;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.4);
+}
+
+/* Forms */
+.form-container {
+    max-width: 780px;
+    margin: 18px auto;
+    padding-bottom: 18px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px
+}
+
+.form-row label {
+    margin-bottom: 6px;
+    color: var(--text) !important; /* higher priority to guarantee contrast */
+}
+
+input[type="text"], textarea, select {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(124, 58, 237, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 200ms ease;
+    cursor: pointer;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: rgba(124, 58, 237, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* Enhanced select dropdown styling */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
+    color-scheme: dark;
+}
+
+select option {
+    background-color: #1a2a3a;
+    color: #e6eef8;
+    padding: 8px;
+    border: none;
+}
+
+select option:checked {
+    background: linear-gradient(#7c3aed, #7c3aed);
+    background-color: #7c3aed !important;
+    color: #ffffff !important;
+}
+
+select:hover {
+    border-color: rgba(124, 58, 237, 0.5);
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+input[type="number"] {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(124, 58, 237, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 200ms ease;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: rgba(124, 58, 237, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* Hide default spinner buttons for number input */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.error {
+    color: #f87171
+}
+
+/* Validation errors and input error state */
+.error {
+    color: #ffb4b4;
+    background: linear-gradient(180deg, rgba(255, 75, 75, 0.04), rgba(255, 75, 75, 0.02));
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-size: 0.95rem;
+}
+
+.input-error {
+    border-color: #ff7a7a !important;
+    box-shadow: 0 4px 12px rgba(255, 122, 122, 0.08);
+}
+
+/* form helper: place error text closely below inputs */
+.form-row .error {
+    margin-top: 6px
+}
+
+/* Auth pages: make background lighter and more visible */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    background: linear-gradient(180deg, #132749 0%, #1a3a5c 100%); /* lighter background */
+}
+
+.auth-card {
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 48px 40px; /* increased padding for better spacing */
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 12px 36px rgba(2, 6, 23, 0.65);
+}
+
+.auth-card h2 {
+    margin: 0 0 24px 0;
+    color: var(--text);
+    font-size: 1.75rem;
+    text-align: center; /* center the heading */
+    font-weight: 700;
+}
+
+/* Auth form styling - ensure all inputs are identical */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form .form-row {
+    margin-bottom: 16px;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="password"],
+.auth-form input[type="email"],
+.auth-form input[type="number"],
+.auth-form textarea,
+.auth-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: all 200ms ease;
+}
+
+.auth-form input[type="text"]:focus,
+.auth-form input[type="password"]:focus,
+.auth-form input[type="email"]:focus,
+.auth-form input[type="number"]:focus,
+.auth-form textarea:focus,
+.auth-form select:focus {
+    outline: none;
+    border-color: rgba(124, 58, 237, 0.4);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.auth-form input::placeholder {
+    color: rgba(230, 238, 248, 0.4);
+}
+
+
+/* Table container styling - use lighter background like auth pages */
+.table-container {
+    background: linear-gradient(180deg, #132749 0%, #1a3a5c 100%);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.table-container h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* High-specificity overrides to neutralize legacy `question.css` rules that conflict
+   with the new layout. These use `.site-header` to win over `.navbar` definitions. */
+.site-header .navbar {
+    /* keep our intended layout */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 8px 20px 8px 20px !important;
+    padding-right: 80px !important;
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.06)) !important;
+    color: inherit !important;
+    z-index: 1000 !important;
+}
+
+.site-header .header-spacer {
+    height: 64px !important;
+}
+
+.site-header .nav-left {
+    margin-left: 0 !important;
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+}
+
+.site-header .nav-right {
+    margin-right: 0 !important;
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+}
+
+.site-header .navbar a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* Ensure any legacy .navbar .nav rules don't interfere */
+.site-header .navbar .nav {
+    display: flex !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Make sure the toggle and nav-menu behave as intended and win over legacy rules */
+.site-header .nav-toggle {
+    display: none !important;
+    position: absolute !important;
+    right: 18px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+.site-header #nav-menu {
+    margin-left: auto !important;
+}
+
+@media (max-width: 800px) {
+    .site-header .nav-toggle {
+        display: inline-flex !important;
+    }
+
+    .site-header #nav-menu {
+        position: fixed !important;
+        top: 64px !important;
+        right: 12px !important;
+        left: 12px !important;
+        z-index: 1050 !important;
+    }
+}
+
+/* Enforce consistent typography and remove underlines for interactive elements */
+.nav-link, .brand-link, .greeting, .nav-menu, .nav-left, .nav-right,
+.btn, .btn-secondary, .auth-link, .action-btn, .question-table th, .question-table td {
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Strongly enforce no underlines and consistent text decoration across browsers */
+.auth-link, .btn, .btn-secondary, .nav-link, a.auth-link, a.btn, a.btn-secondary {
+    text-decoration: none !important;
+    text-decoration-skip-ink: none !important;
+    text-underline-offset: 0 !important;
+    text-decoration-thickness: 0 !important;
+}
+
+/* Ensure anchor tags used as buttons don't inherit visited/underline styles */
+a.auth-link:visited, a.btn:visited, a.btn-secondary:visited {
+    color: inherit !important
+}
+
+/* Note: table row background and hover are defined earlier in the stylesheet for consistency */
+
+/* Ensure action buttons are consistent in size and don't create filled blocks */
+.action-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Make sure auth-link and nav-link use the same font-weight and smoothing */
+.auth-link, .nav-link {
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Increase contrast of labels inside forms a bit more */
+.form-row label {
+    color: #f1f5f9 !important
+}
+
+/* High-specificity anchor-button enforcement to override legacy CSS */
+a.btn, a.btn-secondary, a.auth-link, .auth-actions a.btn, .auth-actions a.btn-secondary {
+    color: #fff !important;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2)) !important;
+    border: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 40px !important;
+    padding: 0 14px !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+}
+
+/* Make sure visited/active/hover states don't reintroduce underline or color changes */
+a.btn:visited, a.btn-secondary:visited, a.auth-link:visited {
+    color: #fff !important
+}
+
+a.btn:hover, a.btn-secondary:hover, a.auth-link:hover {
+    text-decoration: none !important;
+    opacity: 0.98
+}
+
+/* Stronger brand color for visibility */
+.brand-link {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important
+}
+
+
+/* Ensure table cell content aligns vertically center so icons don't create large blocks */
+.question-table td {
+    vertical-align: middle
+}
+
+/* Ensure no descendant element shows an underline inside button-like anchors */
+.btn *, .auth-link *, .btn-secondary * {
+    text-decoration: none !important;
+}
+
+/* Also prevent browser from showing underlines on anchor pseudo-elements */
+a.btn::after, a.btn::before, a.auth-link::after, a.auth-link::before {
+    text-decoration: none !important
+}
+
+/* Quiz container styling */
+.quiz-container {
+    background: linear-gradient(180deg, #132749 0%, #1a3a5c 100%);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 24px auto;
+    max-width: 800px;
+}
+
+.quiz-container h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.question-block {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.question-block p {
+    margin: 0 0 12px 0;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.question-block label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.question-block input[type="radio"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: #7c3aed;
+}
+
+/* Form button styling */
+button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    background: linear-gradient(90deg, #7c3aed, #06b6d4);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+button[type="submit"]:hover {
+    opacity: 0.95;
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.3);
+}
+
+button[type="submit"]:active {
+    transform: translateY(-1px);
+}
+
+

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Quiz Detail</title>
-    <link rel="stylesheet" th:href="@{/css/question.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
@@ -44,9 +44,9 @@
             </div>
         </div>
 
-        <div class="form-row">
-            <button type="submit">Submit Quiz</button>
-            <a th:href="@{/ui/quizzes}">Back</a>
+        <div class="form-actions">
+            <a th:href="@{/ui/quizzes}" class="btn btn-secondary">Back</a>
+            <button type="submit" class="btn">Submit Quiz</button>
         </div>
     </form>
 </div>

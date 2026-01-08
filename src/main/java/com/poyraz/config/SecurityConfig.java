@@ -43,7 +43,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/question/**", "/quiz/**", "/auth/register"))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/login", "/auth/register/**", "/logout-success")
+                                "/login", "/auth/register/**", "/logout-success",
+                                "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
+                        )
                         .permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/ui/questions").hasAnyRole("USER", "ADMIN")
