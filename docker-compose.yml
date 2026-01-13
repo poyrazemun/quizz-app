@@ -1,6 +1,6 @@
 services:
   application:
-    image: quizzapp:1.0
+    image: poyrazemun/quizzapp:latest
     container_name: quizzapp-spring-container
     ports:
       - "8080:8080"
@@ -9,8 +9,12 @@ services:
     environment:
       - MYSQL_USERNAME=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-server:9092
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_healthy
+      kafka-server:
+        condition: service_started
     deploy:
       restart_policy:
         condition: on-failure
@@ -28,7 +32,28 @@ services:
       - "3307:3306"
     networks:
       - quizzapp-mysql-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
 
+  kafka-server:
+    image: apache/kafka:4.0.1
+    container_name: kafka-server
+    ports:
+      - "9092:9092"
+    networks:
+      - quizzapp-mysql-network
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-server:9092
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-server:9093
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
 networks:
   quizzapp-mysql-network:
     driver: bridge

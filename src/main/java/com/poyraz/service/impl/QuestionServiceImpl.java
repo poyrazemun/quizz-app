@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionMapper questionMapper;
     private final QuestionRepository questionRepository;
+    private final KafkaTemplate<String, QuestionDTO> kafkaTemplate;
 
     @Value("${successfully.saved.message}")
     private String successfullySavedMessage;
@@ -34,6 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public String addQuestion(QuestionDTO questionDTO) {
         Question question = questionMapper.questionDTOToQuestion(questionDTO);
+        kafkaTemplate.send("test-topic-1", "spring", questionDTO);
         questionRepository.save(question);
         return successfullySavedMessage;
     }
@@ -91,6 +96,11 @@ public class QuestionServiceImpl implements QuestionService {
                 .stream()
                 .map(questionMapper::questionToQuestionDTO)
                 .toList();
+    }
+
+    @KafkaListener(topics = "test-topic-2", groupId = "test-group")
+    public void listener(@Payload QuestionDTO questionDTO) {
+        System.out.println("Received QuestionDTO from Kafka: " + questionDTO);
     }
 
     @Override
