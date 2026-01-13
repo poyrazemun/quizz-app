@@ -40,9 +40,11 @@ set MYSQL_USERNAME=your_db_user
 set MYSQL_PASSWORD=your_db_password
 ```
 
+Do not commit secrets. Prefer configuring via environment variables or an `.env` file that is not shared publicly.
+
 ---
 
-## Running the application
+## Running the application (local)
 
 Start the app with Maven:
 
@@ -60,6 +62,144 @@ java -jar target/quizzapp-0.0.1-SNAPSHOT.jar
 ```
 
 The API listens on port 8080 by default.
+
+---
+
+## Docker
+
+This project is dockerized. A minimal image is defined in `Dockerfile`:
+
+```dockerfile
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /usr/app
+COPY target/quizzapp-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+### Build and run the image locally
+
+1) Package the app:
+
+```cmd
+mvn package
+```
+
+2) Build the image:
+
+```cmd
+docker build -t quizzapp:local .
+```
+
+3) Run the container (requires a reachable MySQL and optional Kafka env):
+
+```cmd
+docker run --rm -p 8080:8080 ^
+  -e MYSQL_USERNAME=your_db_user ^
+  -e MYSQL_PASSWORD=your_db_password ^
+  quizzapp:local
+```
+
+If your DB is not on `localhost`, set `SPRING_DATASOURCE_URL` accordingly:
+
+```cmd
+docker run --rm -p 8080:8080 ^
+  -e SPRING_DATASOURCE_URL="jdbc:mysql://host:3306/quizzapp" ^
+  -e MYSQL_USERNAME=your_db_user ^
+  -e MYSQL_PASSWORD=your_db_password ^
+  quizzapp:local
+```
+
+---
+
+## Docker Compose
+
+A compose file (`docker-compose.yml`) is provided to run the application together with MySQL and Kafka:
+
+```yaml
+services:
+  application:
+    image: poyrazemun/quizzapp:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_USERNAME=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-server:9092
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      kafka-server:
+        condition: service_started
+
+  mysqldb:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=quizzapp
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+
+  kafka-server:
+    image: apache/kafka:4.0.1
+    ports:
+      - "9092:9092"
+```
+
+Note: the stack uses a shared external bridge network `quizzapp-mysql-network`. Ensure it exists before bringing the
+stack up:
+
+```cmd
+docker network create quizzapp-mysql-network
+```
+
+### Environment variables
+
+Compose reads credentials from `.env` at the repo root. Do not store real passwords in documentation.
+Use the following variable names in your private `.env` file:
+
+- `DB_ROOT_PASS`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+
+Example (placeholder values only — replace locally, do not share):
+
+```dotenv
+DB_ROOT_PASS=***
+DB_USERNAME=***
+DB_PASSWORD=***
+```
+
+You can edit your local `.env` to match your setup. Keep this file private.
+
+### Start the stack
+
+```cmd
+docker compose up -d
+```
+
+- Application: http://localhost:8080
+- MySQL: localhost:3307 (mapped to container 3306)
+- Kafka broker: localhost:9092 (container name: `kafka-server`)
+
+### Logs and troubleshooting
+
+- Check container logs:
+
+```cmd
+docker compose logs -f application
+```
+
+- Verify MySQL health:
+
+```cmd
+docker compose ps
+```
+
+If `mysqldb` is unhealthy, confirm port 3307 is free and your `.env` variables are set correctly.
+
+- If you create quizzes via API, the app persists to MySQL `quizzapp` database inside the container.
 
 ---
 
